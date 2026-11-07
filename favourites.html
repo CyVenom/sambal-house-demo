@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes, made fresh in small batches. A static demo of a university e-commerce project.">
+<title>Favourites - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/favourites.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-heart" style="color:#f87171"></i></div><div><h1>My Favourites</h1><p>Products you've saved</p></div></div></header>
+<div class="container"><div class="favs-wrap" id="favRoot"></div></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser('Please sign in to see your favourites.')) return;
+  var root = document.getElementById('favRoot');
+  function draw() {
+    var list = SH.favs().map(function (f) { return { p: SH.productById(f.product_id), saved: f.saved }; }).filter(function (x) { return x.p && x.p.active; });
+    if (!list.length) { root.innerHTML = '<div class="favs-empty"><i class="far fa-heart"></i><h3>No favourites yet</h3><p style="margin-bottom:20px">Tap the heart on any product to save it here.</p><a href="/index.html#shop" class="btn btn-primary">Browse Products</a></div>'; return; }
+    root.innerHTML = '<div class="favs-grid">' + list.map(function (x) { var p = x.p, b = SH.stockBadge(p.stock, true); return '<div class="fav-card" id="fav-' + p.id + '"><div class="fav-badge"><span class="badge ' + b.cls + '" style="font-size:.72rem;padding:3px 8px">' + b.text + '</span></div><div class="fav-card-img"><img src="' + SH.esc(p.image) + '" alt="' + SH.esc(p.name) + '"></div><div class="fav-card-body"><div class="fav-card-name">' + SH.esc(p.name) + '</div><div class="fav-card-price">RM ' + SH.money(p.price) + '</div><div class="fav-card-saved"><i class="fas fa-heart" style="color:#f87171;margin-right:4px"></i>Saved ' + SH.fmtDate(x.saved, false) + '</div><div class="fav-card-actions"><a href="/product.html?slug=' + encodeURIComponent(p.slug) + '" class="fav-btn-view"><i class="fas fa-eye"></i> View</a><button class="fav-btn-remove" data-pid="' + p.id + '" title="Remove from Favourites"><i class="fas fa-heart-crack"></i></button></div></div></div>'; }).join('') + '</div><p style="text-align:center;color:rgba(255,255,255,.25);font-size:.8rem;margin-top:24px">' + list.length + ' saved product' + (list.length !== 1 ? 's' : '') + '</p>';
+    Array.prototype.forEach.call(root.querySelectorAll('.fav-btn-remove'), function (b) { b.addEventListener('click', function () { SH.toggleFav(parseInt(b.dataset.pid, 10)); SH.updateNavCounts(); draw(); }); });
+  }
+  draw();
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

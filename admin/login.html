@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Admin Login - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div class="admin-login-container">
+  <div class="bg-pattern"></div><div class="floating-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="admin-login-card">
+    <div class="login-header"><div class="logo-container"><i class="fas fa-user-shield"></i><span>Sambal House</span></div><h1>Admin Login</h1><p>Sign in to manage the shop</p></div>
+    <div class="error-message" id="aErr" style="display:none"><i class="fas fa-exclamation-triangle"></i> <span></span></div>
+    <form class="admin-login-form" id="aForm" novalidate>
+      <div class="form-group"><label for="email"><i class="fas fa-envelope"></i> Email Address</label><input type="email" id="email" placeholder="owner@sambal.local" autocomplete="email"></div>
+      <div class="form-group"><label for="password"><i class="fas fa-lock"></i> Password</label><input type="password" id="password" placeholder="Enter your password" autocomplete="current-password"></div>
+      <button type="submit" class="admin-login-btn"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></button>
+    </form>
+    <div class="demo-hint"><b>Demo shortcut.</b> <button type="button" class="btn btn-primary" id="demoAdmin"><i class="fas fa-user-shield"></i> Enter as admin</button><div style="margin-top:8px">Or use <code>owner@sambal.local</code> / <code>owner123</code></div></div>
+  </div>
+  <div class="back-to-shop"><a href="/index.html"><i class="fas fa-arrow-left"></i><span>Back to Shop</span></a></div>
+</div>
+<script>
+SH.ready(function () {
+  function go() { location.href = '/admin/index.html'; }
+  document.getElementById('demoAdmin').addEventListener('click', function () { SH.adminLogin('owner@sambal.local', 'owner123'); go(); });
+  document.getElementById('aForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (SH.adminLogin(document.getElementById('email').value, document.getElementById('password').value)) go();
+    else { var b = document.getElementById('aErr'); b.querySelector('span').textContent = 'Invalid admin credentials.'; b.style.display = 'flex'; }
+  });
+});
+</script>
+</body>
+</html>

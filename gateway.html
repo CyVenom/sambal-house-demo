@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Secure Payment - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/gateway.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="gwRoot"></div>
+<script>
+SH.ready(function () {
+  var q = new URLSearchParams(location.search), bankCode = (q.get('bank') || '').toUpperCase(), id = parseInt(q.get('order_id'), 10);
+  var bk = SH.BANKS[bankCode], o = SH.user() && SH.orderById(id), root = document.getElementById('gwRoot');
+  if (!SH.user()) { location.href = '/login.html'; return; }
+  if (!bk || !o) { root.innerHTML = '<div class="gw-body"><div class="gw-card"><div class="gw-card-body"><p>Invalid payment request.</p><a href="/orders.html">Back to orders</a></div></div></div>'; return; }
+  if (o.status !== 'PENDING') { root.innerHTML = '<div class="gw-body"><div class="gw-card"><div class="gw-card-body"><p>This payment has already been processed.</p><a href="/orders.html">Back to orders</a></div></div></div>'; return; }
+  document.documentElement.style.setProperty('--bk-bg', bk.bg); document.documentElement.style.setProperty('--bk-color', bk.color);
+  document.title = bk.name + ' – Secure Payment';
+  var amt = SH.money(o.total), logo = '/assets/images/banks/' + bk.logo + '.svg';
+  root.innerHTML = '<div class="gw-topbar"><div class="gw-topbar-logo"><img src="' + logo + '" alt="' + SH.esc(bk.name) + '"></div><div><div class="gw-topbar-name">' + SH.esc(bk.name) + '</div><div class="gw-topbar-sub">Online Banking</div></div><div class="gw-topbar-secure"><i class="fas fa-lock"></i> Simulated bank page</div></div>' +
+    '<div class="gw-body"><div class="gw-card"><div class="gw-card-head"><img class="gw-card-head-logo" src="' + logo + '" alt="' + SH.esc(bk.name) + '"><div class="gw-head-label">Total Payment Amount</div><div class="gw-head-amount">RM ' + amt + '</div><div class="gw-head-cur">Malaysian Ringgit (MYR)</div></div>' +
+    '<div class="gw-card-body"><div class="gw-row"><span class="gw-row-label">Merchant</span><span class="gw-row-value">Sambal House</span></div><div class="gw-row"><span class="gw-row-label">Order Reference</span><span class="gw-row-value">#' + o.id + '</span></div><div class="gw-row"><span class="gw-row-label">Payment Method</span><span class="gw-row-value">FPX – ' + SH.esc(bk.name) + '</span></div><div class="gw-row"><span class="gw-row-label">Amount Due</span><span class="gw-row-value accent">RM ' + amt + '</span></div>' +
+    '<div class="gw-secure"><i class="fas fa-shield-alt"></i><span>This is a <strong>simulated</strong> FPX page for the demo. No bank, card or account details are asked for and no money moves.</span></div>' +
+    '<button class="gw-pay-btn" id="payBtn"><i class="fas fa-lock" id="payIcon"></i><span id="payLabel">Confirm &amp; Pay Now</span></button><div class="gw-progress" id="progressWrap"><div class="gw-progress-bar" id="progressBar"></div></div><div class="gw-status" id="statusMsg"></div><a class="gw-cancel" id="cancelLink" href="/orders.html?tab=topay">Cancel and return to merchant</a></div>' +
+    '<div class="gw-card-foot"><i class="fas fa-lock"></i> Simulated by <strong>' + SH.esc(bk.name) + '</strong> &nbsp;|&nbsp; FPX Online Banking</div></div></div>';
+  document.getElementById('payBtn').addEventListener('click', function () {
+    var btn = this, $ = function (i) { return document.getElementById(i); };
+    btn.disabled = true; $('cancelLink').style.display = 'none'; $('payIcon').className = 'fas fa-spinner fa-spin'; $('payLabel').textContent = 'Processing Payment...';
+    $('statusMsg').textContent = 'Authorising your transaction, please wait...'; $('progressWrap').style.display = 'block';
+    setTimeout(function () { $('progressBar').style.width = '90%'; }, 50);
+    setTimeout(function () {
+      $('progressBar').style.width = '100%'; $('payLabel').textContent = 'Payment Approved'; $('payIcon').className = 'fas fa-check-circle';
+      $('statusMsg').className = 'gw-status success'; $('statusMsg').textContent = 'Payment successful! Redirecting you back to Sambal House...';
+      SH.payOrder(o.id);
+      setTimeout(function () { location.href = '/success.html?order_id=' + o.id; }, 700);
+    }, 2000);
+  });
+});
+</script>
+</body>
+</html>

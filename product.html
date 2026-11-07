@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes, made fresh in small batches. A static demo of a university e-commerce project.">
+<title>Product - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/product.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<div class="container" id="pdRoot"></div>
+<script>
+SH.ready(function () {
+  var slug = new URLSearchParams(location.search).get('slug');
+  var p = SH.productBySlug(slug), root = document.getElementById('pdRoot');
+  if (!p) { root.innerHTML = '<div class="empty-card" style="margin-top:40px"><div class="big-emoji">🌶️</div><h3>Product not found</h3><p style="color:var(--muted);margin-bottom:24px">It may have been deactivated in the admin panel.</p><a href="/index.html#shop" class="btn btn-primary">Back to shop</a></div>'; return; }
+  document.title = p.name + ' - Sambal House 🌶️';
+  var u = SH.user(), stock = p.stock, b = SH.stockBadge(stock);
+  var revs = SH.reviewsFor(p.id), total = revs.length, avg = total ? Math.round(revs.reduce(function (a, r) { return a + r.rating; }, 0) / total * 10) / 10 : 0;
+  var isFav = u && SH.favs().some(function (f) { return f.product_id === p.id; });
+  function stars(r, small) {
+    var out = '<span style="font-size:' + (small ? '.95rem' : '1.25rem') + ';color:#f59e0b;letter-spacing:1px">';
+    for (var i = 1; i <= 5; i++) out += r >= i - 0.25 ? '&#9733;' : '<span style="color:rgba(255,255,255,.15)">&#9733;</span>';
+    return out + '</span>';
+  }
+  function mask(n) { n = (n || '').trim(); if (n.length <= 2) return n.charAt(0) + '****'; return n.charAt(0) + new Array(Math.min(4, n.length - 2) + 1).join('*') + n.charAt(n.length - 1); }
+  document.title = p.name + ' - Sambal House 🌶️';
+  var h = '<div class="pd-wrap"><div class="pd-breadcrumb"><a href="/index.html">Home</a><span class="sep">/</span><a href="/index.html#shop">Products</a><span class="sep">/</span><span>' + SH.esc(p.name) + '</span></div>' +
+    '<div class="pd-card"><div class="pd-img-col"><img src="' + SH.esc(p.image) + '" alt="' + SH.esc(p.name) + '" class="pd-img lightbox-trigger"><span class="pd-zoom-hint"><i class="fas fa-search-plus"></i> Click to zoom</span></div>' +
+    '<div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true"><button class="lightbox-close" aria-label="Close">&times;</button><img src="' + SH.esc(p.image) + '" alt="' + SH.esc(p.name) + '" class="lightbox-img"></div>' +
+    '<div class="pd-info-col"><h1 class="pd-title">' + SH.esc(p.name) + '</h1><div class="pd-rating-row">' +
+    (total ? '<span class="pd-avg-num">' + avg.toFixed(1) + '</span><span class="pd-stars-inline">' + '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg)) + '</span><span class="pd-rating-sep">|</span><a href="#reviews" class="pd-rev-count">' + total + ' Rating' + (total !== 1 ? 's' : '') + '</a>'
+      : '<span class="pd-stars-inline" style="color:rgba(255,255,255,.2)">☆☆☆☆☆</span><span class="pd-rating-sep">|</span><span style="color:rgba(255,255,255,.3);font-size:.82rem">No ratings yet</span>') + '</div>' +
+    (u ? '<div style="margin:14px 0 2px"><button id="favBtn" class="pd-fav-btn ' + (isFav ? 'active' : '') + '"><i class="' + (isFav ? 'fas' : 'far') + ' fa-heart"></i> <span id="favLabel">' + (isFav ? 'Saved to Favourites' : 'Add to Favourites') + '</span></button></div>' : '') +
+    '<div class="pd-price-box"><div class="pd-price-label">Price</div><div class="pd-price">RM ' + SH.money(p.price) + '</div></div><div class="pd-info-rows">' +
+    (p.origin ? '<div class="pd-info-row"><span class="pd-row-label"><i class="fas fa-map-marker-alt" style="color:var(--accent);margin-right:5px"></i>Origin</span><span class="pd-row-val">' + SH.esc(p.origin) + '</span></div>' : '') +
+    '<div class="pd-info-row"><span class="pd-row-label"><i class="fas fa-box" style="color:rgba(255,255,255,.3);margin-right:5px"></i>Stock</span><span class="pd-row-val"><span class="badge ' + b.cls + '">' + b.text + '</span></span></div>' +
+    '<div class="pd-info-row" style="align-items:flex-start;padding-top:12px"><span class="pd-row-label" style="padding-top:2px"><i class="fas fa-align-left" style="color:rgba(255,255,255,.3);margin-right:5px"></i>About</span><span class="pd-desc">' + SH.esc(p.description) + '</span></div></div>' +
+    (u ? '<div><div class="pd-qty-row"><span class="pd-qty-label"><i class="fas fa-cubes" style="color:rgba(255,255,255,.3);margin-right:5px"></i>Quantity</span><div class="qty-stepper"><button type="button" class="qty-btn" id="qty-minus"' + (stock <= 0 ? ' disabled' : '') + '>−</button><input type="number" id="qty" class="quantity-input" min="1" max="' + stock + '" value="' + (stock > 0 ? 1 : 0) + '"' + (stock <= 0 ? ' disabled' : '') + ' readonly><button type="button" class="qty-btn" id="qty-plus"' + (stock <= 0 ? ' disabled' : '') + '>+</button></div></div>' +
+      '<div class="pd-actions"><button class="pd-add-btn" id="addBtn" type="button"' + (stock <= 0 ? ' disabled' : '') + '><i class="fas fa-cart-plus" style="margin-right:7px"></i>' + (stock <= 0 ? 'Out of Stock' : 'Add to Cart') + '</button></div></div>'
+      : '<div class="pd-login-box"><p>Sign in to add this item to your cart.</p><div class="pd-login-actions"><a href="/login.html?next=' + encodeURIComponent(location.pathname + location.search) + '" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Sign In</a><a href="/register.html" class="btn btn-secondary"><i class="fas fa-user-plus"></i> Register</a></div></div>') +
+    '</div></div></div>';
+  // reviews
+  var counts = [5, 4, 3, 2, 1].map(function (s) { return revs.filter(function (r) { return r.rating === s; }).length; });
+  h += '<div class="reviews-section" id="reviews"><h2><i class="fas fa-star" style="color:#f59e0b;margin-right:6px"></i>Product Ratings</h2><div class="ratings-summary"><div class="ratings-big"><div class="big-num" style="color:var(--accent)">' + avg.toFixed(1) + '</div><div style="margin:6px 0">' + stars(avg) + '</div><div class="out-of">out of 5</div><div style="color:rgba(255,255,255,.3);font-size:.75rem;margin-top:3px">' + total + ' review' + (total !== 1 ? 's' : '') + '</div></div><div class="ratings-bars">' +
+    [5, 4, 3, 2, 1].map(function (s, i) { var pct = total ? Math.round(counts[i] / total * 100) : 0; return '<div class="bar-row"><span>' + s + ' &#9733;</span><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div><span class="bar-count">' + counts[i] + '</span></div>'; }).join('') + '</div></div>' +
+    (revs.length ? revs.slice(0, 20).map(function (r) { return '<div class="review-card"><div class="review-header"><div><div class="review-user">' + SH.esc(mask(r.name)) + '</div><div style="margin-top:4px">' + stars(r.rating, true) + '</div></div><div class="review-date">' + SH.fmtDate(r.created, false) + '</div></div>' + (r.text ? '<div class="review-text">' + SH.esc(r.text) + '</div>' : '') + '</div>'; }).join('')
+      : '<div class="no-reviews"><i class="fas fa-comment-slash" style="font-size:1.8rem;margin-bottom:10px;display:block;opacity:.3"></i>No reviews yet. Complete an order to rate this product.</div>') + '</div>';
+  // you may also like
+  var others = SH.products().filter(function (x) { return x.id !== p.id; }).sort(function () { return Math.random() - .5; }).slice(0, 8);
+  if (others.length) h += '<div class="ymal-section"><h2 class="ymal-title">You May Also Like</h2><div class="ymal-grid">' + others.map(function (y) { var yb = SH.stockBadge(y.stock, true); return '<a href="/product.html?slug=' + encodeURIComponent(y.slug) + '" class="ymal-card"><div class="ymal-badge-wrap"><span class="badge ' + yb.cls + '" style="font-size:.7rem;padding:3px 8px">' + yb.text + '</span></div><div class="ymal-img-wrap"><img src="' + SH.esc(y.image) + '" alt="' + SH.esc(y.name) + '" loading="lazy"></div><div class="ymal-body"><div class="ymal-name">' + SH.esc(y.name) + '</div><div class="ymal-price">RM ' + SH.money(y.price) + '</div><div class="ymal-view-btn"><span><i class="fas fa-eye"></i> View</span></div></div></a>'; }).join('') + '</div></div>';
+  root.innerHTML = h;
+
+  var q = document.getElementById('qty');
+  if (q) {
+    document.getElementById('qty-minus').addEventListener('click', function () { var v = parseInt(q.value, 10); if (v > 1) q.value = v - 1; });
+    document.getElementById('qty-plus').addEventListener('click', function () { var v = parseInt(q.value, 10); if (v < stock) q.value = v + 1; });
+    document.getElementById('addBtn').addEventListener('click', function () {
+      if (SH.addToCart(p.id, parseInt(q.value, 10) || 1)) { SH.flash('success', 'Added to Cart!', p.name + ' was added successfully.'); location.href = '/cart.html'; }
+    });
+  }
+  var fb = document.getElementById('favBtn');
+  if (fb) fb.addEventListener('click', function () {
+    var r = SH.toggleFav(p.id); if (!r) return;
+    fb.classList.toggle('active', r.favourited);
+    fb.querySelector('i').className = (r.favourited ? 'fas' : 'far') + ' fa-heart';
+    document.getElementById('favLabel').textContent = r.favourited ? 'Saved to Favourites' : 'Add to Favourites';
+    SH.updateNavCounts();
+  });
+  var ov = document.getElementById('lightbox');
+  document.querySelector('.lightbox-trigger').addEventListener('click', function () { ov.classList.add('active'); });
+  ov.addEventListener('click', function (e) { if (e.target !== ov.querySelector('.lightbox-img')) ov.classList.remove('active'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') ov.classList.remove('active'); });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

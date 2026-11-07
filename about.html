@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>About this demo - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-flask"></i></div><div><h1>About this demo</h1><p>What you are looking at, and how it differs from the original</p></div></div></header>
+<div class="container"><div class="about-wrap">
+<p>Sambal House started as a three-person university group project (CIT6224 Web Application Development, Multimedia University): a full e-commerce site for handcrafted chili pastes, written in <b>PHP and MySQL</b>. I was the team leader and the full-stack and security lead. This page is a <b>static rebuild</b> of it so anyone can click through the whole flow without installing XAMPP.</p>
+
+<h2>Try it</h2>
+<ul>
+<li>Sign in with <b>Try as customer</b> on the <a href="/login.html">login page</a>, or register (the OTP code is shown on screen).</li>
+<li>Add sambal to the cart, check out, pick a bank, and confirm on the simulated FPX page.</li>
+<li>Open <b>Track</b> on the order and watch it move from Paid to Shipped to Received to Completed.</li>
+<li>Once an order is completed you can rate it, and the review appears on the product page.</li>
+<li>Open the <a href="/admin/login.html">admin panel</a> (one-click demo login) to see the dashboard, change order statuses and edit products.</li>
+</ul>
+
+<h2>How the demo works</h2>
+<p>There is no server and no database. Everything you do is saved in your own browser (<code>localStorage</code>), so your cart, orders and reviews are private to you and disappear if you clear site data. Use <b>Reset demo data</b> in the footer to start over. Nothing you type is sent anywhere.</p>
+
+<h2>Original app vs this demo</h2>
+<table>
+<tr><th>Feature</th><th>Original (PHP + MySQL)</th><th>This demo</th></tr>
+<tr><td>Data</td><td>MySQL, 14 tables, prepared statements</td><td>Browser storage, same data model</td></tr>
+<tr><td>Sign-up</td><td>Email OTP over SMTP</td><td>OTP shown on screen</td></tr>
+<tr><td>Payment</td><td>Simulated FPX bank gateway</td><td>Same simulated gateway, same banks</td></tr>
+<tr><td>Order tracking</td><td>Auto-advances every 60 s</td><td>Auto-advances every 20 s</td></tr>
+<tr><td>Security</td><td>CSRF tokens, hashed passwords, CSP headers, session hardening</td><td>Not applicable (no server). Demo passwords are stored as plain text in your browser, so don't reuse a real one.</td></tr>
+<tr><td>Not rebuilt here</td><td colspan="2">Returns and refunds tracking, PDF receipts, password reset, email-change verification, live admin polling, sales CSV export, the team page.</td></tr>
+</table>
+
+<h2>Sample data</h2>
+<p>The 11 products, prices, stock and descriptions come from the original database. The demo customer and the two older orders under "My Orders" are made-up sample data so the pages aren't empty.</p>
+<p style="margin-top:28px"><a href="/index.html#shop" class="btn btn-primary">Back to the shop</a></p>
+</div></div>
+<div id="footer-root"></div>
+</body>
+</html>

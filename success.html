@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Payment Successful - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/success.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<div id="psRoot"></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser()) return;
+  var id = parseInt(new URLSearchParams(location.search).get('order_id'), 10), o = SH.orderById(id);
+  if (!o) { SH.flash('error', 'Not Found', 'Order not found.'); location.href = '/orders.html'; return; }
+  var rows = o.items.map(function (i) { return '<li class="ps-item"><span class="ps-item-name">' + SH.esc(i.name) + '</span><span class="ps-item-qty">× ' + i.qty + '</span><span class="ps-item-price">RM ' + SH.money(i.price * i.qty) + '</span></li>'; }).join('');
+  document.getElementById('psRoot').innerHTML = '<div class="ps-wrap"><div class="ps-hero"><div class="ps-icon">✅</div><h2>Payment Successful!</h2><p>Thank you, <strong>' + SH.esc(o.full_name) + '</strong>. Your payment has been confirmed.</p><div class="ps-badge"><i class="fas fa-check-circle"></i> Order #' + o.id + ' · ' + (o.status === 'PENDING' ? 'PENDING' : 'PAID') + '</div></div>' +
+    '<div class="ps-card"><div class="ps-card-head"><i class="fas fa-receipt"></i> Order Details</div><div class="ps-card-body"><div class="ps-detail-row"><span class="ps-detail-label">Order Number</span><span class="ps-detail-value">#' + o.id + '</span></div><div class="ps-detail-row"><span class="ps-detail-label">Status</span><span class="ps-detail-value" style="color:#4ade80">' + o.status + '</span></div><div class="ps-detail-row"><span class="ps-detail-label">Payment Method</span><span class="ps-detail-value">Online Banking (FPX)</span></div><div class="ps-detail-row"><span class="ps-detail-label">Date</span><span class="ps-detail-value">' + SH.fmtDate(o.created_at) + '</span></div></div></div>' +
+    '<div class="ps-card"><div class="ps-card-head"><i class="fas fa-box"></i> Items Ordered</div><div class="ps-card-body" style="padding:0 18px"><ul class="ps-items-list">' + rows + '</ul></div><div class="ps-total"><span>Total Paid</span><span class="ps-total-amount">RM ' + SH.money(o.total) + '</span></div></div>' +
+    '<div class="ps-card"><div class="ps-card-head"><i class="fas fa-map-marker-alt"></i> Delivery Address</div><div class="ps-card-body"><div class="ps-detail-row"><span class="ps-detail-label">Address</span><span class="ps-detail-value" style="text-align:right">' + SH.esc(o.address_line1) + (o.address_line2 ? '<br>' + SH.esc(o.address_line2) : '') + '</span></div><div class="ps-detail-row"><span class="ps-detail-label">City / State</span><span class="ps-detail-value">' + SH.esc(o.city) + ', ' + SH.esc(o.state_region) + '</span></div><div class="ps-detail-row"><span class="ps-detail-label">Postcode</span><span class="ps-detail-value">' + SH.esc(o.postcode) + '</span></div></div></div>' +
+    '<div class="ps-actions" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px"><a href="/track.html?order_id=' + o.id + '" class="btn btn-primary"><i class="fas fa-truck"></i> Track Order</a><a href="/orders.html" class="btn"><i class="fas fa-receipt"></i> My Orders</a><a href="/index.html#shop" class="btn">Continue Shopping</a></div></div>';
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

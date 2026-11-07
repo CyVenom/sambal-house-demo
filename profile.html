@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>My Profile - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/checkout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-user-pen"></i></div><div><h1>My Profile</h1><p>Saved details are used to pre-fill checkout</p></div></div></header>
+<div class="container"><form id="profForm" novalidate style="max-width:760px;margin:0 auto 60px">
+  <div class="co-card"><div class="co-card-header"><i class="fas fa-user"></i> Personal Information</div><div class="co-card-body"><div class="co-grid">
+    <div class="co-field"><label>Full Name <span class="req">*</span></label><input id="p_name"></div>
+    <div class="co-field"><label>Phone</label><input id="p_phone" inputmode="tel"></div>
+    <div class="co-field co-full"><label>Email</label><input id="p_email" readonly style="opacity:.6;cursor:not-allowed"></div>
+  </div></div></div>
+  <div class="co-card" style="margin-top:18px"><div class="co-card-header"><i class="fas fa-map-marker-alt"></i> Saved Address</div><div class="co-card-body"><div class="co-grid">
+    <div class="co-field co-full"><label>Address Line 1</label><input id="p_a1"></div>
+    <div class="co-field co-full"><label>Address Line 2</label><input id="p_a2"></div>
+    <div class="co-field"><label>State</label><select id="p_state"><option value="">-- Select State --</option></select></div>
+    <div class="co-field"><label>City</label><input id="p_city"></div>
+    <div class="co-field"><label>Postcode</label><input id="p_pc" maxlength="5" inputmode="numeric"></div>
+  </div></div></div>
+  <button class="co-submit-btn" type="submit" style="margin-top:18px"><i class="fas fa-floppy-disk"></i> Save Profile</button>
+</form></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser()) return;
+  var u = SH.user(), $ = function (i) { return document.getElementById(i); };
+  SH.STATES.forEach(function (s) { var o = document.createElement('option'); o.value = o.textContent = s; $('p_state').appendChild(o); });
+  $('p_name').value = u.name; $('p_phone').value = u.phone || ''; $('p_email').value = u.email; $('p_a1').value = u.address_line1 || ''; $('p_a2').value = u.address_line2 || ''; $('p_state').value = u.state || ''; $('p_city').value = u.city || ''; $('p_pc').value = u.postcode || '';
+  $('profForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if ($('p_name').value.trim().length < 2) { Swal.fire({ icon: 'error', title: 'Name needed', text: 'Full name must be at least 2 characters.' }); return; }
+    if ($('p_pc').value && !/^\d{5}$/.test($('p_pc').value)) { Swal.fire({ icon: 'error', title: 'Postcode', text: 'Postcode must be exactly 5 digits.' }); return; }
+    u.name = $('p_name').value.trim(); u.phone = $('p_phone').value.trim(); u.address_line1 = $('p_a1').value.trim(); u.address_line2 = $('p_a2').value.trim(); u.state = $('p_state').value; u.city = $('p_city').value.trim(); u.postcode = $('p_pc').value.trim();
+    SH.save(); SH.updateNavCounts();
+    Swal.fire({ icon: 'success', title: 'Profile saved', timer: 1400, showConfirmButton: false });
+  });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

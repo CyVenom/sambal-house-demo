@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Checkout - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/checkout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-credit-card"></i></div><div><h1>Checkout</h1><p>Almost there, just a few details</p></div></div></header>
+<div class="container">
+  <a href="/cart.html" class="back-button">Back to Cart</a>
+  <form id="checkoutForm" novalidate>
+    <div class="co-layout">
+      <div class="co-main">
+        <div class="co-card"><div class="co-card-header"><i class="fas fa-user"></i> Personal Information</div><div class="co-card-body"><div class="co-grid">
+          <div class="co-field"><label>Full Name <span class="req">*</span></label><input id="full_name" placeholder="Enter your full name" autocomplete="name"></div>
+          <div class="co-field"><label>Email <span class="req">*</span></label><input type="email" id="c_email" placeholder="you@example.com" autocomplete="email"></div>
+          <div class="co-field co-full"><label>Phone <span class="field-hint">optional</span></label><input id="phone" placeholder="+60 12-345 6789" autocomplete="tel" inputmode="tel"></div>
+        </div></div></div>
+        <div class="co-card"><div class="co-card-header"><i class="fas fa-map-marker-alt"></i> Shipping Address</div><div class="co-card-body">
+          <div class="saved-addr-banner" id="savedBanner" style="display:none"><label class="saved-addr-check"><input type="checkbox" id="use_saved_addr" checked><span><i class="fas fa-location-dot"></i> Use my saved address</span></label></div>
+          <div class="co-grid">
+            <div class="co-field co-full"><label>Address Line 1 <span class="req">*</span></label><input id="addr1" placeholder="Street address, building number" autocomplete="address-line1"></div>
+            <div class="co-field co-full"><label>Address Line 2 <span class="field-hint">optional</span></label><input id="addr2" placeholder="Apartment, suite, unit, etc." autocomplete="address-line2"></div>
+            <div class="co-field"><label>State <span class="req">*</span></label><select id="state"><option value="">-- Select State --</option></select></div>
+            <div class="co-field"><label>City <span class="req">*</span></label><input id="city" placeholder="e.g. Kuala Lumpur" autocomplete="address-level2"></div>
+            <div class="co-field"><label>Postcode <span class="req">*</span></label><input id="postcode" placeholder="50000" maxlength="5" inputmode="numeric"></div>
+            <div class="co-field"><label>Country</label><input value="Malaysia" readonly style="opacity:.6;cursor:not-allowed"></div>
+          </div></div></div>
+      </div>
+      <div class="co-side">
+        <div class="co-card"><div class="co-card-header"><i class="fas fa-receipt"></i> Order Summary</div><div class="co-card-body" style="padding:0"><ul class="co-summary-list" id="sumList"></ul><div class="co-total-row"><span>Total</span><span class="co-total-amount" id="sumTotal"></span></div></div></div>
+        <div class="co-card"><div class="co-card-header"><i class="fas fa-wallet"></i> Payment Method</div><div class="co-card-body">
+          <div class="fpx-method-label"><span class="fpx-badge"><i class="fas fa-shield-alt"></i> FPX</span><span>Online Banking (FPX)</span></div>
+          <p class="bank-select-hint">Select your bank:</p>
+          <div class="bank-grid" id="bankGrid"><div class="bank-card" data-code="MAYBANK"><img src="/assets/images/banks/maybank.svg" alt="Maybank" class="bank-logo-img"><span>Maybank</span></div><div class="bank-card" data-code="CIMB"><img src="/assets/images/banks/cimb.svg" alt="CIMB Bank" class="bank-logo-img"><span>CIMB Bank</span></div><div class="bank-card" data-code="PUBLIC"><img src="/assets/images/banks/public.svg" alt="Public Bank" class="bank-logo-img"><span>Public Bank</span></div><div class="bank-card" data-code="RHB"><img src="/assets/images/banks/rhb.svg" alt="RHB Bank" class="bank-logo-img"><span>RHB Bank</span></div><div class="bank-card" data-code="HONGLEONG"><img src="/assets/images/banks/hongleong.svg" alt="Hong Leong Bank" class="bank-logo-img"><span>Hong Leong</span></div><div class="bank-card" data-code="AMBANK"><img src="/assets/images/banks/ambank.svg" alt="AmBank" class="bank-logo-img"><span>AmBank</span></div><div class="bank-card" data-code="BANKISLAM"><img src="/assets/images/banks/bankislam.svg" alt="Bank Islam" class="bank-logo-img"><span>Bank Islam</span></div><div class="bank-card" data-code="TOUCHNGO"><img src="/assets/images/banks/touchngo.svg" alt="Touch 'n Go" class="bank-logo-img"><span>Touch 'n Go</span></div></div>
+          <div id="bank-error" class="field-error" style="display:none;margin-top:8px"></div>
+          <div class="demo-hint" style="margin-top:14px">Demo: no real payment is taken. The next screen is a simulated bank page.</div>
+        </div></div>
+        <button class="co-submit-btn" type="submit" id="placeOrderBtn"><i class="fas fa-lock"></i> Place Order</button>
+        <p class="co-secure-note"><i class="fas fa-shield-alt"></i> Demo checkout: nothing leaves your browser</p>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser('Please sign in to proceed with checkout.')) return;
+  var items = SH.cartItems();
+  if (!items.length) { location.href = '/cart.html'; return; }
+  var $ = function (id) { return document.getElementById(id); }, u = SH.user(), bank = '';
+  SH.STATES.forEach(function (s) { var o = document.createElement('option'); o.value = o.textContent = s; $('state').appendChild(o); });
+  $('sumList').innerHTML = items.map(function (i) { return '<li class="co-summary-item"><div class="co-item-info"><span class="co-item-name">' + SH.esc(i.product.name) + '</span><span class="co-item-qty">× ' + i.qty + '</span></div><span class="co-item-price">RM ' + SH.money(i.product.price * i.qty) + '</span></li>'; }).join('');
+  $('sumTotal').textContent = 'RM ' + SH.money(SH.cartTotal());
+  $('full_name').value = u.name; $('c_email').value = u.email; $('phone').value = u.phone || '';
+  function fillSaved(on) { $('addr1').value = on ? u.address_line1 : ''; $('addr2').value = on ? u.address_line2 : ''; $('city').value = on ? u.city : ''; $('state').value = on ? u.state : ''; $('postcode').value = on ? u.postcode : ''; }
+  if (u.address_line1) { $('savedBanner').style.display = ''; fillSaved(true); $('use_saved_addr').addEventListener('change', function () { fillSaved(this.checked); }); }
+  Array.prototype.forEach.call(document.querySelectorAll('.bank-card'), function (c) { c.addEventListener('click', function () { Array.prototype.forEach.call(document.querySelectorAll('.bank-card'), function (x) { x.classList.remove('selected'); }); c.classList.add('selected'); bank = c.dataset.code; $('bank-error').style.display = 'none'; }); });
+  $('checkoutForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    Array.prototype.forEach.call(document.querySelectorAll('.js-error'), function (x) { x.remove(); });
+    Array.prototype.forEach.call(document.querySelectorAll('.co-field'), function (x) { x.classList.remove('has-error'); });
+    var valid = true;
+    function err(id, msg) { var el = $(id); el.closest('.co-field').classList.add('has-error'); var s = document.createElement('span'); s.className = 'field-error js-error'; s.textContent = msg; el.after(s); valid = false; }
+    var name = $('full_name').value.trim(), email = $('c_email').value.trim(), phone = $('phone').value.trim(), a1 = $('addr1').value.trim(), city = $('city').value.trim(), st = $('state').value, pc = $('postcode').value.trim();
+    if (name.length < 2) err('full_name', 'Full name is required (min 2 characters).'); else if (!/^[\p{L}\s'\-\.]{2,}$/u.test(name)) err('full_name', 'Name can only contain letters, spaces, hyphens and apostrophes.');
+    if (!email) err('c_email', 'Email is required.'); else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) err('c_email', 'Please enter a valid email address.'); else if (SH.EMAIL_DOMAINS.indexOf(email.slice(email.lastIndexOf('@') + 1).toLowerCase()) < 0) err('c_email', 'Please use a recognised email provider (Gmail, Outlook, Yahoo, etc.).');
+    if (phone && !/^[+\d][\d\s\-\(\)]{5,18}$/.test(phone)) err('phone', 'Phone must only contain digits, spaces, +, - or ().');
+    if (a1.length < 5) err('addr1', 'Please enter a complete address.');
+    if (city.length < 2) err('city', 'City is required.'); else if (!/^[\p{L}\s'\-\.]{2,}$/u.test(city)) err('city', 'City can only contain letters and spaces.');
+    if (!st) err('state', 'Please select a state.');
+    if (!/^\d{5}$/.test(pc)) err('postcode', 'Postcode must be exactly 5 digits (e.g. 50000).');
+    if (!bank) { var be = $('bank-error'); be.textContent = 'Please select a bank to proceed.'; be.style.display = 'block'; valid = false; }
+    if (!valid) { var f = document.querySelector('.has-error'); if (f) f.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    var r = SH.placeOrder({ full_name: name, email: email, phone: phone, address_line1: a1, address_line2: $('addr2').value.trim(), city: city, state_region: st, postcode: pc, country: 'Malaysia' }, bank);
+    if (r.error) { SH.flash('error', 'Stock changed', r.error); location.href = '/cart.html'; return; }
+    $('placeOrderBtn').disabled = true; $('placeOrderBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    location.href = '/gateway.html?bank=' + bank + '&order_id=' + r.order.id;
+  });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

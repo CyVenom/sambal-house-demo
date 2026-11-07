@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Products - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body class="admin-products">
+<div id="nav-root" data-mode="admin"></div>
+<header class="page-header"><div class="page-header-inner" style="justify-content:space-between;width:100%"><div style="display:flex;align-items:center;gap:18px"><div class="ph-icon"><i class="fas fa-box"></i></div><div><h1>Products</h1><p>Manage your sambal lineup</p></div></div><a class="btn btn-primary" href="/admin/product-edit.html" style="border-radius:999px;padding:12px 22px;font-weight:600;background:var(--gradient-fire);color:#2b090a"><i class="fas fa-plus"></i> Add Product</a></div></header>
+<div class="container"><table class="table"><thead><tr><th>#</th><th>Name</th><th>Slug</th><th>Price</th><th>Stock</th><th>Active</th><th>Orders</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireAdmin()) return;
+  var rows = document.getElementById('rows');
+  function draw() {
+    var O = SH.allOrders();
+    rows.innerHTML = SH.allProducts().slice().sort(function (a, b) { return (b.active - a.active) || (b.id - a.id); }).map(function (p) {
+      var n = O.filter(function (o) { return o.items.some(function (i) { return i.product_id === p.id; }); }).length;
+      return '<tr><td>' + p.id + '</td><td>' + SH.esc(p.name) + '</td><td>' + SH.esc(p.slug) + '</td><td>RM ' + SH.money(p.price) + '</td><td>' + p.stock + '</td><td>' + (p.active ? 'Yes' : 'No') + '</td><td>' + (n || '-') + '</td><td style="display:flex;gap:6px;flex-wrap:wrap"><a class="btn" href="/admin/product-edit.html?id=' + p.id + '">Edit</a><button class="btn" data-toggle="' + p.id + '">' + (p.active ? 'Deactivate' : 'Reactivate') + '</button><button class="btn btn-danger" data-del="' + p.id + '">Delete</button></td></tr>';
+    }).join('');
+  }
+  draw();
+  rows.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.toggle) { var p = SH.productById(parseInt(b.dataset.toggle, 10)); p.active = !p.active; SH.save(); draw(); }
+    if (b.dataset.del) {
+      var id = parseInt(b.dataset.del, 10);
+      Swal.fire({ title: 'Permanently delete this product?', text: 'It is removed from the shop and from carts. Past orders keep their line items.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Delete' }).then(function (r) { if (r.isConfirmed) { SH.adminDeleteProduct(id); draw(); } });
+    }
+  });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Dashboard - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body class="admin-dashboard">
+<div id="nav-root" data-mode="admin"></div>
+<header class="page-header"><div class="page-header-inner" style="justify-content:space-between;width:100%"><div style="display:flex;align-items:center;gap:18px"><div class="ph-icon"><i class="fas fa-pepper-hot"></i></div><div><h1>Dashboard</h1><p>Welcome back, here's what's happening with your sambal business.</p></div></div></div></header>
+<div class="container" id="dash"></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireAdmin()) return;
+  var O = SH.allOrders(), P = SH.allProducts(), U = SH.allUsers(), now = Date.now(), DAY = 86400000;
+  var PAID = ['PAID', 'PROCESSING', 'SHIPPED', 'RECEIVED', 'COMPLETED'];
+  var paid = O.filter(function (o) { return PAID.indexOf(o.status) >= 0; });
+  var sum = function (l) { return l.reduce(function (a, o) { return a + o.total; }, 0); };
+  var startDay = new Date(); startDay.setHours(0, 0, 0, 0);
+  var week = new Date(startDay); week.setDate(week.getDate() - ((week.getDay() + 6) % 7));
+  var month = new Date(startDay.getFullYear(), startDay.getMonth(), 1);
+  var cnt = function (s) { return O.filter(function (o) { return o.status === s; }).length; };
+  var recent = O.slice(0, 5), low = P.filter(function (p) { return p.active && p.stock <= 10; }).sort(function (a, b) { return a.stock - b.stock; }).slice(0, 5);
+  function stat(cls, icon, num, label, sub) { return '<div class="stat-card ' + cls + '"><div class="stat-icon"><i class="fas ' + icon + '"></i></div><div class="stat-content"><span class="number">' + num + '</span><div class="label">' + label + '</div><div class="sub-label">' + sub + '</div></div></div>'; }
+  function sales(color, icon, num, label, sub) { return '<div class="stat-card" style="--sc:' + color + '"><div class="stat-icon" style="background:' + color + ';color:#fff"><i class="fas ' + icon + '"></i></div><div class="stat-content"><span class="number" style="color:' + color + '">RM ' + SH.money(num) + '</span><div class="label">' + label + '</div><div class="sub-label">' + sub + '</div></div></div>'; }
+  document.getElementById('dash').innerHTML =
+    '<div class="stats-grid">' + stat('primary', 'fa-box', P.length, 'Total Products', P.filter(function (p) { return p.active; }).length + ' active') +
+    stat('success', 'fa-shopping-cart', O.length, 'Total Orders', O.filter(function (o) { return now - o.created_at < 7 * DAY; }).length + ' this week') +
+    stat('warning', 'fa-clock', cnt('PENDING'), 'Pending Orders', 'Needs attention') +
+    stat('info', 'fa-users', U.length, 'Total Customers', 'Demo accounts in this browser') +
+    stat('revenue', 'fa-dollar-sign', 'RM ' + SH.money(sum(paid)), 'Total Revenue', 'RM ' + SH.money(sum(O.filter(function (o) { return o.status === 'PENDING'; }))) + ' pending') +
+    stat('admin', 'fa-user-shield', 1, 'Admin Users', 'System access') + '</div>' +
+    '<div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-top:0">' +
+    sales('#0ea5e9', 'fa-sun', sum(paid.filter(function (o) { return o.created_at >= startDay.getTime(); })), "Today's Sales", 'Paid orders only') +
+    sales('#8b5cf6', 'fa-calendar-week', sum(paid.filter(function (o) { return o.created_at >= week.getTime(); })), 'This Week', 'Mon – today') +
+    sales('#10b981', 'fa-calendar-alt', sum(paid.filter(function (o) { return o.created_at >= month.getTime(); })), 'This Month', new Date().toLocaleString('en-GB', { month: 'long', year: 'numeric' })) + '</div>' +
+    '<div class="dashboard-section"><h2><i class="fas fa-chart-pie"></i> Order Status Breakdown</h2><div class="order-status-grid">' +
+    [['pending', 'PENDING'], ['paid', 'PAID'], ['processing', 'PROCESSING'], ['shipped', 'SHIPPED'], ['completed', 'COMPLETED'], ['cancelled', 'CANCELLED']].map(function (s) { return '<div class="status-card ' + s[0] + '"><span class="count">' + cnt(s[1]) + '</span><span class="label">' + s[0].charAt(0).toUpperCase() + s[0].slice(1) + '</span></div>'; }).join('') + '</div></div>' +
+    '<div class="dashboard-row"><div class="dashboard-column"><div class="dashboard-card"><div class="card-header"><h3><i class="fas fa-history"></i> Recent Orders</h3><a href="/admin/orders.html" class="view-all-btn">View All</a></div><div class="card-content">' +
+    (recent.length ? '<div class="recent-orders">' + recent.map(function (o) { return '<div class="order-item"><div class="order-info"><div class="order-name">' + SH.esc(o.full_name) + '</div><div class="order-email">' + SH.esc(o.email) + '</div><div class="order-time">' + SH.fmtDate(o.created_at) + '</div></div><div class="order-details"><div class="order-total">RM ' + SH.money(o.total) + '</div><div class="order-status status-' + o.status.toLowerCase() + '">' + o.status + '</div></div></div>'; }).join('') + '</div>' : '<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>No orders yet</p></div>') + '</div></div></div>' +
+    '<div class="dashboard-column"><div class="dashboard-card"><div class="card-header"><h3><i class="fas fa-exclamation-triangle"></i> Low Stock Alert</h3><a href="/admin/products.html" class="view-all-btn">Manage</a></div><div class="card-content">' +
+    (low.length ? '<div class="low-stock-list">' + low.map(function (p) { return '<div class="stock-item"><div class="product-name">' + SH.esc(p.name) + '</div><div class="stock-count ' + (p.stock <= 5 ? 'critical' : 'warning') + '">' + p.stock + ' left</div></div>'; }).join('') + '</div>' : '<div class="empty-state success"><i class="fas fa-check-circle"></i><p>All products well stocked!</p></div>') + '</div></div></div></div>';
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+
+body {
+  background:
+    radial-gradient(ellipse 120% 65% at 50% 20%,  rgba(255,56,56,.22)  0%, transparent 60%),
+    radial-gradient(ellipse 80%  55% at 88% 35%,  rgba(255,107,74,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 70%  55% at 10% 60%,  rgba(255,56,56,.14)  0%, transparent 55%),
+    radial-gradient(ellipse 100% 45% at 50% 90%,  rgba(255,56,56,.10)  0%, transparent 55%),
+    linear-gradient(180deg, #150809 0%, #0d0607 100%);
+  background-attachment: fixed;
+}
+
+/* Fixed particle layer — covers whole page at all scroll depths */
+.page-particles {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(255,56,56,.55)  0 2px,   transparent 3px),
+    radial-gradient(circle at 75% 70%, rgba(255,182,39,.45) 0 2px,   transparent 3px),
+    radial-gradient(circle at 50% 50%, rgba(255,107,74,.45) 0 1.5px, transparent 2.5px);
+  background-size: 90px 90px, 130px 130px, 60px 60px;
+  opacity: .4;
+  animation: drift 18s linear infinite;
+}
+
+/* Fixed full-page chili decorations */
+.page-chilies {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+/* Each chili is a container with orb + icon */
+.pc-deco {
+  position: absolute;
+  width: 280px; height: 280px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pc-deco .pc-orb {
+  position: absolute; inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,74,.55) 0%, rgba(255,56,56,.2) 55%, transparent 75%);
+  filter: blur(20px);
+  animation: pulse 3.2s ease-in-out infinite;
+}
+.pc-deco i {
+  position: relative; z-index: 1;
+  font-size: 9.5rem;
+  color: var(--accent);
+  opacity: .72;
+}
+
+/* Left 1 — upper left */
+.pc-l1 { top: 20vh; left: -50px; animation: pcFloatL 8s ease-in-out infinite; }
+.pc-l1 i { filter: drop-shadow(0 20px 40px rgba(255,56,56,.65)); transform: rotate(22deg); }
+.pc-l1 .pc-orb { animation-delay: 0s; }
+
+/* Left 2 — lower left */
+.pc-l2 { top: 58vh; left: -40px; animation: pcFloatL 10s ease-in-out infinite 2.8s; }
+.pc-l2 i { filter: drop-shadow(0 20px 38px rgba(255,56,56,.6)); transform: rotate(-18deg); }
+.pc-l2 .pc-orb { animation-delay: 1.6s; }
+
+/* Right 1 — upper right */
+.pc-r1 { top: 12vh; right: -50px; animation: pcFloatR 9s ease-in-out infinite 1s; }
+.pc-r1 i { filter: drop-shadow(0 20px 40px rgba(255,56,56,.65)); transform: rotate(-22deg); }
+.pc-r1 .pc-orb { animation-delay: 0.5s; }
+
+/* Right 2 — lower right */
+.pc-r2 { top: 52vh; right: -40px; animation: pcFloatR 11s ease-in-out infinite 3.5s; }
+.pc-r2 i { filter: drop-shadow(0 20px 38px rgba(255,56,56,.6)); transform: rotate(16deg); }
+.pc-r2 .pc-orb { animation-delay: 2s; }
+
+@keyframes pcFloatL {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-22px); }
+}
+@keyframes pcFloatR {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(18px); }
+}
+@media (max-width: 768px) { .page-chilies { display: none; } }
+

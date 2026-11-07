@@ -1,0 +1,135 @@
+// Product catalogue seed (from the original project's database)
+window.SEED_PRODUCTS = [
+ {
+  "id": 1,
+  "name": "Sambal Belacan 230g",
+  "slug": "sambal-belacan-230g",
+  "description": "A bold traditional chili sambal blended with aromatic shrimp paste for a deep, savory, and spicy flavor that pairs perfectly with rice and grilled dishes.",
+  "price": 15.9,
+  "stock": 174,
+  "image": "/assets/images/products/product_1777651693_58e521ae.webp",
+  "origin": "Johor, Malaysia",
+  "type": "classic",
+  "active": true
+ },
+ {
+  "id": 10,
+  "name": "Sambal Tumis 230g",
+  "slug": "sambal-tumis-230g",
+  "description": "A slow-cooked chili sambal with a rich aroma, mildly sweet taste, and signature oily texture perfect as an everyday Malaysian favorite.",
+  "price": 16.9,
+  "stock": 195,
+  "image": "/assets/images/products/product_1777651687_ce3c4ab2.webp",
+  "origin": "Johor",
+  "type": "classic",
+  "active": true
+ },
+ {
+  "id": 11,
+  "name": "Sambal Ikan Bilis 230g",
+  "slug": "sambal-ikan-bilis-230g",
+  "description": "Spicy chili sambal mixed with crispy anchovies for a savory, crunchy bite that’s incredibly addictive with rice or bread.",
+  "price": 18.9,
+  "stock": 200,
+  "image": "/assets/images/products/product_1777651681_d64ae757.webp",
+  "origin": "Penang, Malaysia",
+  "type": "ikan",
+  "active": true
+ },
+ {
+  "id": 12,
+  "name": "Sambal Sotong 230g",
+  "slug": "sambal-sotong-230g",
+  "description": "Tender squid cooked in a thick, spicy sambal gravy packed with deep umami flavor and a satisfying seafood richness.",
+  "price": 25.9,
+  "stock": 199,
+  "image": "/assets/images/products/product_1777651661_b9232347.webp",
+  "origin": "Penang",
+  "type": "seafood",
+  "active": true
+ },
+ {
+  "id": 13,
+  "name": "Sambal Hijau 230g",
+  "slug": "sambal-hijau-230g",
+  "description": "A vibrant green chili sambal with a fresher taste and lighter heat, perfect for those who enjoy a bright and aromatic spice profile.",
+  "price": 14.9,
+  "stock": 200,
+  "image": "/assets/images/products/product_1777651853_0d925b4d.webp",
+  "origin": "Kedah",
+  "type": "classic",
+  "active": true
+ },
+ {
+  "id": 14,
+  "name": "Sambal Udang 230g",
+  "slug": "sambal-udang-230g",
+  "description": "Juicy prawns simmered in a flavorful chili sambal sauce for a rich, spicy seafood dish loved across Malaysia.",
+  "price": 29.9,
+  "stock": 195,
+  "image": "/assets/images/products/product_1777653362_c12e448e.webp",
+  "origin": "Terengganu",
+  "type": "seafood",
+  "active": true
+ },
+ {
+  "id": 15,
+  "name": "Sambal Merah 230g",
+  "slug": "sambal-merah-230g",
+  "description": "A classic red chili sambal with balanced heat and bold flavor your essential everyday spicy companion.",
+  "price": 12.9,
+  "stock": 600,
+  "image": "/assets/images/products/product_1777653531_cc42be51.webp",
+  "origin": "Selangor",
+  "type": "classic",
+  "active": true
+ },
+ {
+  "id": 16,
+  "name": "Sambal Tempoyak 230g",
+  "slug": "sambal-tempoyak-230g",
+  "description": "A unique fermented durian sambal with tangy depth and creamy richness perfect for adventurous food lovers seeking authentic heritage flavors.",
+  "price": 32.9,
+  "stock": 400,
+  "image": "/assets/images/products/product_1777653645_d4eb43eb.webp",
+  "origin": "Pahang",
+  "type": "premium",
+  "active": true
+ },
+ {
+  "id": 17,
+  "name": "Sambal Garing Ikan Bilis 230g",
+  "slug": "sambal-garing-ikan-bilis-230g",
+  "description": "Crispy anchovies coated in fragrant spicy sambal for a crunchy, savory topping that pairs perfectly with rice, noodles, or even bread.",
+  "price": 18.9,
+  "stock": 344,
+  "image": "/assets/images/products/product_1777654037_d9465cef.webp",
+  "origin": "Kedah",
+  "type": "ikan",
+  "active": true
+ },
+ {
+  "id": 18,
+  "name": "Sambal Garlic Crunch 230g",
+  "slug": "sambal-garlic-crunch-230g",
+  "description": "A fragrant chili oil packed with crispy garlic bits, delivering savory heat and irresistible crunch perfect as a topping or dipping companion.",
+  "price": 14.9,
+  "stock": 250,
+  "image": "/assets/images/products/product_1777715782_c099d0d3.webp",
+  "origin": "Kuala Lumpur",
+  "type": "classic",
+  "active": true
+ },
+ {
+  "id": 19,
+  "name": "Sambal Truffle Signature 230g",
+  "slug": "sambal-truffle-signature-230g",
+  "description": "An exclusive signature sambal blended with real truffle for a bold, earthy aroma and refined spicy richness crafted to transform simple dishes into a luxurious dining experience.",
+  "price": 30.9,
+  "stock": 1000,
+  "image": "/assets/images/products/product_1777716606_a65274b6.webp",
+  "origin": "Kuala Lumpur",
+  "type": "premium",
+  "active": true
+ }
+];

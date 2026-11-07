@@ -1,0 +1,11 @@
+
+    .admin-login-card { padding: 36px 40px; max-width: 420px; }
+    .login-header { margin-bottom: 20px; }
+    .login-header h1 { font-size: 1.6rem; }
+    .login-header p { font-size: .85rem; }
+    .admin-login-form { gap: 10px; margin-bottom: 18px; }
+    .admin-login-form .form-group { margin-bottom: 0; }
+    .admin-login-form input { padding: 11px 16px; font-size: .92rem; }
+    .admin-login-form label { font-size: .82rem; margin-bottom: 5px; }
+    .admin-login-btn { padding: 13px 20px; font-size: .95rem; margin-top: 4px; }
+  

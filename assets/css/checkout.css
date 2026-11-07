@@ -1,0 +1,50 @@
+
+.fpx-method-label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  font-weight: 600; font-size: .95rem;
+  margin-bottom: 14px;
+}
+.fpx-badge {
+  background: linear-gradient(135deg, #0046a8, #0070cc);
+  color: #fff; font-size: .72rem; font-weight: 700;
+  padding: 4px 9px; border-radius: 6px; letter-spacing: .5px;
+  white-space: nowrap;
+}
+.bank-select-hint { font-size: .82rem; color: var(--muted); margin: 0 0 10px; }
+.bank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 9px;
+}
+.bank-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 12px 6px;
+  background: rgba(255,255,255,.04);
+  border: 2px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+  text-align: center; user-select: none;
+}
+.bank-card:hover {
+  border-color: rgba(255,56,56,.45);
+  background: rgba(255,56,56,.06);
+}
+.bank-card.selected {
+  border-color: var(--accent);
+  background: rgba(255,56,56,.1);
+  box-shadow: 0 0 0 3px rgba(255,56,56,.18);
+}
+.bank-logo-img {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: block;
+  box-shadow: 0 3px 10px rgba(0,0,0,.4);
+  transition: transform .15s;
+}
+.bank-card:hover .bank-logo-img { transform: scale(1.07); }
+.bank-card.selected .bank-logo-img { box-shadow: 0 0 0 3px var(--accent), 0 3px 10px rgba(0,0,0,.4); }
+.bank-card span { font-size: .76rem; font-weight: 600; color: var(--text); line-height: 1.3; }

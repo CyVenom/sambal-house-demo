@@ -1,0 +1,33 @@
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.qty-stepper input[type=number] {
+  width: 48px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid rgba(255,255,255,.1);
+  border-right: 1px solid rgba(255,255,255,.1);
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  padding: 6px 0;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.qty-stepper input[type=number]::-webkit-outer-spin-button,
+.qty-stepper input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+.qty-btn {
+  background: transparent;
+  color: var(--text);
+  border: none;
+  padding: 6px 12px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+.qty-btn:hover { background: rgba(255,255,255,.08); }

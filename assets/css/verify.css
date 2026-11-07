@@ -1,0 +1,36 @@
+
+    .admin-login-card { padding: 36px 40px; max-width: 420px; }
+    .login-header { margin-bottom: 20px; }
+    .login-header h1 { font-size: 1.6rem; }
+    .login-header p { font-size: .85rem; }
+    .admin-login-form { gap: 10px; margin-bottom: 18px; }
+    .admin-login-form .form-group { margin-bottom: 0; }
+    .admin-login-form label { font-size: .82rem; margin-bottom: 5px; }
+    .admin-login-btn { padding: 13px 20px; font-size: .95rem; margin-top: 4px; }
+    .otp-input {
+      text-align: center !important;
+      font-size: 2rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 12px !important;
+      padding: 14px 16px !important;
+      color: var(--accent) !important;
+    }
+    .email-hint {
+      background: rgba(255,56,56,.08);
+      border: 1px solid rgba(255,56,56,.2);
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .email-hint strong { color: var(--text); }
+    .resend-btn {
+      background: none; border: none;
+      color: var(--accent); cursor: pointer;
+      font-size: .88rem; font-weight: 600;
+      text-decoration: underline; padding: 0;
+    }
+    .resend-btn:hover { opacity: .8; }
+  

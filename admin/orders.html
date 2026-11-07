@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Orders - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body class="admin-orders">
+<div id="nav-root" data-mode="admin"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-shopping-cart"></i></div><div><h1>Orders</h1><p>Process customer orders &amp; update status</p></div></div></header>
+<div class="container"><table class="table"><thead><tr><th>#</th><th>Customer</th><th>Email</th><th>Status</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireAdmin()) return;
+  var rows = document.getElementById('rows');
+  function draw() {
+    var O = SH.allOrders();
+    rows.innerHTML = O.length ? O.map(function (o) {
+      var st = o.status === 'CANCELLED' ? '<span style="display:inline-block;background:rgba(244,67,54,.15);color:#f87171;border:1px solid rgba(244,67,54,.35);padding:4px 12px;border-radius:8px;font-size:.8rem;font-weight:600">CANCELLED</span>'
+        : '<select data-id="' + o.id + '">' + ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'RECEIVED', 'COMPLETED'].map(function (s) { return '<option value="' + s + '"' + (s === o.status ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select>';
+      return '<tr><td>' + o.id + '</td><td>' + SH.esc(o.full_name) + '</td><td>' + SH.esc(o.email) + '</td><td>' + st + '</td><td>RM ' + SH.money(o.total) + '</td><td>' + SH.fmtDate(o.created_at) + '</td><td><a class="btn" href="/admin/order.html?id=' + o.id + '">View</a></td></tr>';
+    }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--muted)">No orders yet.</td></tr>';
+  }
+  draw();
+  rows.addEventListener('change', function (e) { var s = e.target.closest('select'); if (!s) return; SH.adminSetStatus(parseInt(s.dataset.id, 10), s.value); Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Order #' + s.dataset.id + ' set to ' + s.value, showConfirmButton: false, timer: 1800, background: '#1a1a1a', color: '#fff' }); });
+  setInterval(function () { if (!document.activeElement || document.activeElement.tagName !== 'SELECT') draw(); }, 5000);
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Login - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/login.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div class="admin-login-container">
+  <div class="bg-pattern"></div><div class="floating-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div><div class="shape shape-3"></div></div>
+  <div class="admin-login-card">
+    <div class="login-header"><div class="logo-container"><i class="fas fa-pepper-hot"></i><span>Sambal House</span></div><h1>Welcome Back</h1><p>Sign in to your account</p></div>
+    <div class="error-message" id="loginErr" style="display:none"><i class="fas fa-exclamation-triangle"></i> <span></span></div>
+    <form class="admin-login-form" id="loginForm" novalidate>
+      <div class="form-group"><label for="email"><i class="fas fa-envelope"></i> Email Address</label><input type="email" id="email" placeholder="SambalHouse@example.com" autocomplete="email"><span class="field-error" id="emailError"></span></div>
+      <div class="form-group"><label for="password"><i class="fas fa-lock"></i> Password</label><div style="position:relative"><input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" style="padding-right:44px"><button type="button" onclick="togglePw('password','eyeLogin')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer"><i class="fas fa-eye" id="eyeLogin"></i></button></div><span class="field-error" id="passwordError"></span></div>
+      <button type="submit" class="admin-login-btn"><i class="fas fa-sign-in-alt"></i><span>Sign In</span></button>
+    </form>
+    <div class="demo-hint"><b>Demo shortcut.</b> No sign-up needed to look around:<br>
+      <button type="button" class="btn btn-primary" id="demoCust"><i class="fas fa-user"></i> Try as customer</button>
+      <a class="btn btn-secondary" href="/admin/login.html"><i class="fas fa-user-shield"></i> Open admin panel</a>
+      <div style="margin-top:8px">Customer login: <code>demo@sambal.local</code> / <code>demo1234</code></div></div>
+    <div class="login-footer"><p style="text-align:center;color:var(--muted);font-size:.9rem">Don't have an account? <a href="/register.html" style="color:var(--accent);font-weight:600">Create one here</a></p></div>
+  </div>
+  <div class="back-to-shop"><a href="/index.html"><i class="fas fa-arrow-left"></i><span>Back to Shop</span></a></div>
+</div>
+<script>
+function togglePw(id, icon) { var i = document.getElementById(id), e = document.getElementById(icon); if (i.type === 'password') { i.type = 'text'; e.classList.replace('fa-eye', 'fa-eye-slash'); } else { i.type = 'password'; e.classList.replace('fa-eye-slash', 'fa-eye'); } }
+SH.ready(function () {
+  function go() { var n = new URLSearchParams(location.search).get('next'); location.href = (n && n.charAt(0) === '/' && n.charAt(1) !== '/') ? n : '/index.html'; }
+  document.getElementById('demoCust').addEventListener('click', function () { SH.loginAs(1); SH.flash('success', 'Welcome back!', 'Signed in as the demo customer.'); go(); });
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var em = document.getElementById('email'), pw = document.getElementById('password'), ee = document.getElementById('emailError'), pe = document.getElementById('passwordError'), box = document.getElementById('loginErr');
+    ee.textContent = pe.textContent = ''; box.style.display = 'none';
+    var ok = true;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())) { ee.textContent = 'Please enter a valid email address.'; ok = false; }
+    if (!pw.value) { pe.textContent = 'Password is required.'; ok = false; }
+    if (!ok) return;
+    if (SH.login(em.value, pw.value)) { SH.flash('success', 'Welcome back!', 'You are now signed in.'); go(); }
+    else { box.querySelector('span').textContent = 'Invalid email or password.'; box.style.display = 'flex'; }
+  });
+});
+</script>
+</body>
+</html>

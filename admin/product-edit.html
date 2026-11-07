@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Edit Product - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/checkout.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root" data-mode="admin"></div>
+<header class="page-header"><div class="page-header-inner"><div class="ph-icon"><i class="fas fa-pen"></i></div><div><h1 id="peTitle">Product</h1><p>Changes show on the shop straight away</p></div></div></header>
+<div class="container"><a href="/admin/products.html" class="back-button">Back to Products</a>
+<form id="peForm" novalidate style="max-width:720px"><div class="co-card"><div class="co-card-header"><i class="fas fa-box"></i> Details</div><div class="co-card-body"><div class="co-grid">
+  <div class="co-field co-full"><label>Name <span class="req">*</span></label><input id="f_name"></div>
+  <div class="co-field co-full"><label>Description</label><textarea id="f_desc" rows="4" style="background:var(--card);color:var(--text);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;font:inherit"></textarea></div>
+  <div class="co-field"><label>Price (RM) <span class="req">*</span></label><input id="f_price" type="number" step="0.01" min="0"></div>
+  <div class="co-field"><label>Stock <span class="req">*</span></label><input id="f_stock" type="number" min="0"></div>
+  <div class="co-field"><label>Origin</label><input id="f_origin"></div>
+  <div class="co-field"><label>Category</label><select id="f_type"><option value="classic">Classic</option><option value="ikan">Ikan Bilis</option><option value="seafood">Seafood</option><option value="premium">Premium</option></select></div>
+</div></div></div>
+<p style="color:var(--muted);font-size:.82rem;margin:12px 0">Image upload is not part of the demo: new products reuse an existing product photo.</p>
+<button class="co-submit-btn" type="submit"><i class="fas fa-floppy-disk"></i> Save Product</button></form></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireAdmin()) return;
+  var $ = function (i) { return document.getElementById(i); }, id = parseInt(new URLSearchParams(location.search).get('id'), 10), p = id ? SH.productById(id) : null;
+  $('peTitle').textContent = p ? 'Edit ' + p.name : 'Add Product';
+  if (p) { $('f_name').value = p.name; $('f_desc').value = p.description; $('f_price').value = p.price; $('f_stock').value = p.stock; $('f_origin').value = p.origin; $('f_type').value = p.type; }
+  $('peForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('f_name').value.trim(), price = parseFloat($('f_price').value), stock = parseInt($('f_stock').value, 10);
+    if (name.length < 2 || !(price >= 0) || !(stock >= 0)) { Swal.fire({ icon: 'error', title: 'Check the form', text: 'Name, price and stock are required.' }); return; }
+    var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    var d = { name: name, description: $('f_desc').value.trim(), price: price, stock: stock, origin: $('f_origin').value.trim(), type: $('f_type').value };
+    if (p) { d.id = p.id; } else { d.slug = slug; }
+    SH.adminSaveProduct(d); SH.flash('success', 'Saved', name + ' was saved.'); location.href = '/admin/products.html';
+  });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

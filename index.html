@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes, made fresh in small batches. A static demo of a university e-commerce project.">
+<title>Shop - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/index.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<div class="page-particles" aria-hidden="true"></div>
+<div class="page-chilies" aria-hidden="true">
+  <div class="pc-deco pc-l1"><div class="pc-orb"></div><i class="fas fa-pepper-hot"></i></div>
+  <div class="pc-deco pc-l2"><div class="pc-orb"></div><i class="fas fa-pepper-hot"></i></div>
+  <div class="pc-deco pc-r1"><div class="pc-orb"></div><i class="fas fa-pepper-hot"></i></div>
+  <div class="pc-deco pc-r2"><div class="pc-orb"></div><i class="fas fa-pepper-hot"></i></div>
+</div>
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div>
+      <span class="hero-eyebrow"><i class="fas fa-fire"></i> Authentic · Handcrafted · Small-Batch</span>
+      <h1>Bring the <span class="flame">heat</span><br>home with every spoon.</h1>
+      <p class="lead">Slow-cooked Malaysian sambal made from real chilies, fresh aromatics and zero shortcuts. Our handcrafted sambal collection, ready to set your table on fire.</p>
+      <div class="hero-cta">
+        <a href="#shop" class="btn btn-primary"><i class="fas fa-cart-shopping"></i> &nbsp;Shop Sambal</a>
+        <a href="/about.html" class="btn btn-ghost"><i class="fas fa-flask"></i> &nbsp;About this demo</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num" id="statFlavors">11</div><div class="lbl">Signature flavors</div></div>
+        <div class="hero-stat"><div class="num">100%</div><div class="lbl">Real chilies</div></div>
+        <div class="hero-stat"><div class="num">🌶️🌶️🌶️</div><div class="lbl">Heat level</div></div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="glow-orb"></div>
+      <div class="chili"><i class="fas fa-pepper-hot"></i></div>
+      <span class="spark s1"></span><span class="spark s2"></span><span class="spark s3"></span>
+    </div>
+  </div>
+</section>
+<div class="feature-strip">
+  <div class="feat"><i class="fas fa-leaf"></i><div><div class="ft">Fresh ingredients</div><div class="fs">No preservatives</div></div></div>
+  <div class="feat"><i class="fas fa-fire-flame-curved"></i><div><div class="ft">Slow-cooked heat</div><div class="fs">Traditional recipe</div></div></div>
+  <div class="feat"><i class="fas fa-truck-fast"></i><div><div class="ft">Fast delivery</div><div class="fs">Across Malaysia</div></div></div>
+  <div class="feat"><i class="fas fa-lock"></i><div><div class="ft">Secure checkout</div><div class="fs">Pay your way</div></div></div>
+</div>
+<div class="container" id="shop">
+  <div class="section-header">
+    <h2>Our Sambal</h2>
+    <p class="section-subtitle">Handcrafted chili pastes, made fresh in small batches</p>
+  </div>
+  <div class="search-filter-section">
+    <div class="search-container"><div class="search-input-group"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search sambal products..." class="search-input"></div></div>
+    <div class="filter-container">
+      <div class="filter-group"><label for="priceFilter">Price Range:</label><select id="priceFilter" class="filter-select"><option value="">All Prices</option><option value="u13">Under RM 13</option><option value="13-20">RM 13 – RM 20</option><option value="20-30">RM 20 – RM 30</option><option value="30-40">RM 30 – RM 40</option></select></div>
+      <div class="filter-group"><label for="sortBy">Sort By:</label><select id="sortBy" class="filter-select"><option value="name-asc">Name A-Z</option><option value="name-desc">Name Z-A</option><option value="price-asc">Price Low to High</option><option value="price-desc">Price High to Low</option><option value="stock-desc">Most Stock</option><option value="stock-asc">Least Stock</option></select></div>
+      <div class="filter-group"><label for="stockFilter">Stock Status:</label><select id="stockFilter" class="filter-select"><option value="">All Products</option><option value="in-stock">In Stock (10+)</option><option value="low-stock">Low Stock (1-10)</option><option value="out-of-stock">Out of Stock</option></select></div>
+      <div class="filter-group"><label for="categoryFilter">Category:</label><select id="categoryFilter" class="filter-select"><option value="">All Categories</option><option value="classic">Classic</option><option value="ikan">Ikan Bilis</option><option value="seafood">Seafood</option><option value="premium">Premium</option></select></div>
+      <button type="button" id="resetFilters" class="reset-filters-btn"><i class="fas fa-undo"></i> Reset Filters</button>
+    </div>
+    <div class="results-info"><span id="resultsCount">Showing all products</span></div>
+  </div>
+  <div class="grid" id="productsGrid"></div>
+  <div id="noResults" class="no-results" style="display:none;">
+    <i class="fas fa-search"></i><h3>No products found</h3><p>Try adjusting your search terms or filters</p>
+    <button type="button" id="clearAllFilters" class="btn btn-primary">Clear All Filters</button>
+  </div>
+</div>
+<script>
+SH.ready(function () {
+  var all = SH.products();
+  document.getElementById('statFlavors').textContent = all.length;
+  var $ = function (id) { return document.getElementById(id); };
+  function card(p) {
+    var b = SH.stockBadge(p.stock);
+    return '<div class="card product-card product-card-visible" style="display:flex">' +
+      '<div class="badges"><span class="badge ' + b.cls + '">' + b.text + '</span></div>' +
+      '<img src="' + SH.esc(p.image) + '" alt="' + SH.esc(p.name) + '" loading="lazy">' +
+      '<div class="card-body"><h3 class="product-name">' + SH.esc(p.name) + '</h3>' +
+      (p.origin ? '<div class="product-location"><i class="fas fa-map-marker-alt"></i> ' + SH.esc(p.origin) + '</div>' : '') +
+      '<div class="price">RM ' + SH.money(p.price) + '</div>' +
+      '<a class="btn btn-primary view-btn" href="/product.html?slug=' + encodeURIComponent(p.slug) + '"><i class="fas fa-eye"></i> View Details</a></div></div>';
+  }
+  function render() {
+    var term = $('searchInput').value.toLowerCase().trim(), price = $('priceFilter').value, ss = $('stockFilter').value, cat = $('categoryFilter').value, sort = $('sortBy').value;
+    var list = all.filter(function (p) {
+      if (term && p.name.toLowerCase().indexOf(term) < 0) return false;
+      if (price === 'u13' && p.price >= 13) return false;
+      if (price === '13-20' && (p.price < 13 || p.price >= 20)) return false;
+      if (price === '20-30' && (p.price < 20 || p.price >= 30)) return false;
+      if (price === '30-40' && (p.price < 30 || p.price > 40)) return false;
+      if (ss && SH.stockBadge(p.stock).status !== ss) return false;
+      if (cat && p.type !== cat) return false;
+      return true;
+    });
+    list.sort(function (a, b) {
+      if (sort === 'name-desc') return b.name.localeCompare(a.name);
+      if (sort === 'price-asc') return a.price - b.price;
+      if (sort === 'price-desc') return b.price - a.price;
+      if (sort === 'stock-desc') return b.stock - a.stock;
+      if (sort === 'stock-asc') return a.stock - b.stock;
+      return a.name.localeCompare(b.name);
+    });
+    $('productsGrid').innerHTML = list.map(card).join('');
+    $('productsGrid').style.display = list.length ? 'grid' : 'none';
+    $('noResults').style.display = list.length ? 'none' : 'block';
+    $('resultsCount').textContent = list.length === all.length ? 'Showing all ' + all.length + ' products' : 'Showing ' + list.length + ' of ' + all.length + ' products';
+  }
+  function reset() { $('searchInput').value = ''; $('priceFilter').value = ''; $('sortBy').value = 'name-asc'; $('stockFilter').value = ''; $('categoryFilter').value = ''; render(); }
+  var t; $('searchInput').addEventListener('input', function () { clearTimeout(t); t = setTimeout(render, 200); });
+  ['priceFilter', 'sortBy', 'stockFilter', 'categoryFilter'].forEach(function (id) { $(id).addEventListener('change', render); });
+  $('resetFilters').addEventListener('click', reset); $('clearAllFilters').addEventListener('click', reset);
+  render();
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>Track Order - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/track.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<div class="to-wrap" id="toRoot"></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser()) return;
+  var id = parseInt(new URLSearchParams(location.search).get('order_id'), 10), root = document.getElementById('toRoot');
+  var STEPS = [['Order Placed', 'fa-clipboard-list', 'created_at'], ['Order Paid', 'fa-credit-card', 'paid_at'], ['Order Shipped Out', 'fa-truck', 'shipped_at'], ['Order Received', 'fa-box-open', 'received_at'], ['Order Completed', 'fa-star', 'completed_at']];
+  var DONE = { PENDING: 0, PAID: 1, PROCESSING: 1, SHIPPED: 2, RECEIVED: 3, COMPLETED: 4 };
+  var LABEL = { PAID: '🚚 Currently Shipping Out...', PROCESSING: '🚚 Currently Shipping Out...', SHIPPED: '📦 Parcel on the Way...', RECEIVED: '⭐ Order Completing Soon...' };
+  var FROM = { PAID: 'paid_at', SHIPPED: 'shipped_at', RECEIVED: 'received_at' };
+  var TOAST = [null, null, ['🚚', 'Order Shipped Out!', 'Your order is on its way.'], ['📦', 'Order Received!', 'Your order has been delivered.'], ['⭐', 'Order Completed!', 'Thanks for shopping with Sambal House!']];
+  var lastDone = null;
+  function toast(i) { var t = TOAST[i]; if (!t) return; Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 4000, timerProgressBar: true, icon: 'success', title: t[0] + ' ' + t[1], text: t[2], background: '#1a1a1a', color: '#fff', iconColor: '#22c55e' }); }
+  function fmtCd(s) { return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+  function draw() {
+    var o = SH.orderById(id);
+    if (!o) { root.innerHTML = '<div class="empty-card" style="margin-top:30px"><div class="big-emoji">📦</div><h3>Order not found</h3><a href="/orders.html" class="btn btn-primary">My Orders</a></div>'; return false; }
+    var done = DONE.hasOwnProperty(o.status) ? DONE[o.status] : -1, cancelled = o.status === 'CANCELLED';
+    var h = '<div class="to-head"><div class="to-head-left"><a href="/orders.html" class="to-back"><i class="fas fa-arrow-left"></i></a><div><h2>Order #' + o.id + '</h2><p>Placed on ' + SH.fmtDate(o.created_at) + '</p></div></div><span class="to-status" id="status-badge" data-s="' + o.status + '">' + o.status + '</span></div>';
+    if (cancelled) h += '<div class="to-cancelled"><i class="fas fa-times-circle"></i><h3>Order Cancelled</h3><p style="margin-bottom:6px">This order was cancelled on ' + SH.fmtDate(o.cancelled_at) + '. Stock has been returned to the shop.</p></div>';
+    else {
+      h += '<div class="to-tracker-card"><div class="tracker-steps">' + STEPS.map(function (s, i) { var d = done >= 0 && i <= done, cur = i === done && o.status !== 'COMPLETED'; return (i ? '<div class="step-connector ' + (d ? 'done' : '') + '"></div>' : '') + '<div class="tracker-step ' + (d ? 'done' : '') + ' ' + (cur ? 'current' : '') + '"><div class="step-icon"><i class="fas ' + s[1] + '"></i></div><div class="step-label">' + s[0] + '</div><div class="step-time">' + (o[s[2]] ? SH.fmtDate(o[s[2]]) : '') + '</div></div>'; }).join('') + '</div></div>';
+      if (LABEL[o.status]) { var left = Math.max(0, Math.ceil((SH.STEP_MS - (Date.now() - o[FROM[o.status]])) / 1000)); h += '<div class="to-countdown"><i class="fas fa-clock"></i> <span>' + LABEL[o.status] + '</span> &nbsp;<b>' + (left > 0 ? fmtCd(left) : '...') + '</b></div>'; }
+      if (o.status === 'PENDING') h += '<div class="to-countdown"><i class="fas fa-clock"></i> <span>Waiting for payment.</span> &nbsp;<a href="/orders.html?tab=topay" style="color:var(--accent)">Pay now</a></div>';
+    }
+    h += '<div class="to-card"><div class="to-card-head"><i class="fas fa-box"></i> Items Ordered</div><div class="to-card-body" style="padding:0 16px">' + o.items.map(function (i) { return '<div class="to-item-row"><span class="to-item-name">' + SH.esc(i.name) + '</span><span class="to-item-qty">× ' + i.qty + '</span><span class="to-item-price">RM ' + SH.money(i.price * i.qty) + '</span></div>'; }).join('') + '</div><div class="to-total"><span>Total</span><span class="to-total-amt">RM ' + SH.money(o.total) + '</span></div></div>' +
+      '<div class="to-card"><div class="to-card-head"><i class="fas fa-map-marker-alt"></i> Delivery Address</div><div class="to-card-body"><div class="to-row"><span class="to-row-label">Name</span><span class="to-row-val">' + SH.esc(o.full_name) + '</span></div><div class="to-row"><span class="to-row-label">Address</span><span class="to-row-val">' + SH.esc(o.address_line1) + (o.address_line2 ? ', ' + SH.esc(o.address_line2) : '') + '</span></div><div class="to-row"><span class="to-row-label">City / State</span><span class="to-row-val">' + SH.esc(o.city) + ', ' + SH.esc(o.state_region) + '</span></div><div class="to-row"><span class="to-row-label">Postcode</span><span class="to-row-val">' + SH.esc(o.postcode) + '</span></div></div></div>' +
+      '<div class="to-actions"><a href="/orders.html" class="btn"><i class="fas fa-receipt"></i> My Orders</a></div>' +
+      (!cancelled && o.status !== 'COMPLETED' ? '<p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:14px">Demo: each stage advances automatically every ' + SH.STEP_MS / 1000 + ' seconds (the original app used 60).</p>' : '');
+    root.innerHTML = h;
+    if (lastDone !== null && done !== lastDone) toast(done);
+    if (lastDone === null) setTimeout(function () { toast(done); }, 600);
+    lastDone = done;
+    return !(cancelled || o.status === 'COMPLETED');
+  }
+  document.title = 'Track Order #' + id + ' - Sambal House 🌶️';
+  if (draw()) { var t = setInterval(function () { if (!draw()) clearInterval(t); }, 1000); }
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>

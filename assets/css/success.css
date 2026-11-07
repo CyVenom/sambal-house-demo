@@ -1,0 +1,84 @@
+
+.ps-wrap {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 18px 60px;
+}
+.ps-hero {
+  text-align: center;
+  padding: 48px 28px 36px;
+  background: linear-gradient(180deg, rgba(26,12,14,.95) 0%, rgba(15,7,8,.95) 100%);
+  border: 1px solid rgba(255,56,56,.18);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -30px rgba(255,56,56,.35);
+  margin-bottom: 20px;
+}
+.ps-icon {
+  font-size: 4rem;
+  margin-bottom: 14px;
+  line-height: 1;
+  filter: drop-shadow(0 6px 16px rgba(0,200,100,.4));
+}
+.ps-hero h2 { font-size: 1.9rem; margin-bottom: 8px; color: #fff; }
+.ps-hero p  { color: var(--muted); margin-bottom: 0; }
+.ps-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 14px 0 0;
+  padding: 5px 14px;
+  background: rgba(34,197,94,.15);
+  border: 1px solid rgba(34,197,94,.35);
+  border-radius: 20px;
+  font-size: .82rem; font-weight: 600; color: #4ade80;
+}
+
+.ps-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.ps-card-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  font-weight: 600; font-size: .9rem;
+}
+.ps-card-head i { color: var(--accent); }
+.ps-card-body { padding: 16px 18px; }
+
+.ps-detail-row {
+  display: flex; justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: .88rem;
+}
+.ps-detail-row:last-child { border-bottom: none; }
+.ps-detail-label { color: var(--muted); }
+.ps-detail-value { font-weight: 500; }
+
+.ps-items-list { list-style: none; }
+.ps-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: .88rem;
+}
+.ps-item:last-child { border-bottom: none; }
+.ps-item-name { flex: 1; }
+.ps-item-qty  { color: var(--muted); margin: 0 12px; }
+.ps-item-price { font-weight: 600; color: var(--accent); }
+
+.ps-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-weight: 700;
+}
+.ps-total-amount { font-size: 1.3rem; color: var(--accent); }
+
+.ps-actions {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  margin-top: 20px;
+}
+.ps-actions .btn { padding: 10px 20px; font-size: .88rem; }

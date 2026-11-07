@@ -1,0 +1,4 @@
+
+@media print {
+  nav, .page-header, .site-footer { display: none !important; }
+}

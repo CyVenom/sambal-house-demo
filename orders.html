@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sambal House: handcrafted Malaysian chili pastes. A static demo of a university e-commerce project.">
+<title>My Orders - Sambal House 🌶️</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="/assets/demo.css">
+<link rel="stylesheet" href="/assets/css/orders.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/seed.js"></script>
+<script src="/assets/app.js"></script>
+</head>
+<body>
+<div id="nav-root"></div>
+<header class="page-header"><div class="page-header-inner" style="justify-content:space-between;width:100%"><div style="display:flex;align-items:center;gap:18px"><div class="ph-icon"><i class="fas fa-receipt"></i></div><div><h1>My Orders</h1><p>Track every spicy delivery</p></div></div><a class="btn btn-primary" href="/index.html#shop" style="border-radius:999px;padding:12px 22px;font-weight:600;background:var(--gradient-fire);color:#2b090a">Continue Shopping</a></div></header>
+<div class="container"><div class="orders-wrap"><div class="orders-tabs" id="tabs"></div><div id="banner"></div><div id="list"></div></div></div>
+
+<div id="reviewModalOverlay" class="review-modal-overlay" role="dialog" aria-modal="true"><div class="review-modal-box">
+  <button id="rvClose" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"><i class="fas fa-times"></i></button>
+  <h3 style="color:#fff;margin-bottom:4px"><i class="fas fa-star" style="color:#f59e0b"></i> Rate Your Order</h3><p id="reviewModalRef" style="color:var(--muted);font-size:.83rem;margin-bottom:18px"></p>
+  <form id="reviewForm"><div id="reviewProductsContainer"></div><button type="submit" class="review-submit-btn"><i class="fas fa-paper-plane"></i> Submit Review</button></form></div></div>
+<div id="viewReviewOverlay" class="review-modal-overlay" role="dialog" aria-modal="true"><div class="review-modal-box">
+  <button id="vrClose" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"><i class="fas fa-times"></i></button>
+  <h3 style="color:#fff;margin-bottom:4px"><i class="fas fa-eye" style="color:#a5b4fc"></i> My Reviews</h3><p id="viewReviewRef" style="color:var(--muted);font-size:.83rem;margin-bottom:18px"></p><div id="viewReviewContainer"></div></div></div>
+<div id="payNowOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center"><div style="background:#1c0d0f;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;max-width:440px;width:90%;position:relative">
+  <button id="pnClose" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer"><i class="fas fa-times"></i></button>
+  <h3 style="color:#fff;margin-bottom:6px"><i class="fas fa-credit-card" style="color:var(--accent)"></i> Complete Your Payment</h3><p style="color:var(--muted);font-size:.88rem;margin-bottom:20px">Select your bank for order <b id="payNowOrderRef" style="color:#fff"></b>.</p><div id="payBanks" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div></div></div>
+<script>
+SH.ready(function () {
+  if (!SH.requireUser()) return;
+  var $ = function (id) { return document.getElementById(id); };
+  var TABS = { all: 'All', topay: 'To Pay', toship: 'To Ship', toreceive: 'To Receive', completed: 'Completed', cancelled: 'Cancelled' };
+  var FILTER = { all: null, topay: ['PENDING'], toship: ['PAID', 'PROCESSING'], toreceive: ['SHIPPED'], completed: ['COMPLETED', 'RECEIVED'], cancelled: ['CANCELLED'] };
+  var CFG = { PENDING: ['To Pay', '#f59e0b', 'rgba(245,158,11,.15)'], PAID: ['To Ship', '#3b82f6', 'rgba(59,130,246,.15)'], PROCESSING: ['Processing', '#3b82f6', 'rgba(59,130,246,.15)'], SHIPPED: ['To Receive', '#8b5cf6', 'rgba(139,92,246,.15)'], RECEIVED: ['Delivered', '#22d3ee', 'rgba(34,211,238,.15)'], COMPLETED: ['Completed', '#10b981', 'rgba(16,185,129,.15)'], CANCELLED: ['Cancelled', '#ef4444', 'rgba(239,68,68,.15)'] };
+  var tab = new URLSearchParams(location.search).get('tab'); if (!FILTER.hasOwnProperty(tab)) tab = 'all';
+
+  function draw() {
+    var all = SH.myOrders();
+    $('tabs').innerHTML = Object.keys(TABS).map(function (k) {
+      var n = all.filter(function (o) { return !FILTER[k] || FILTER[k].indexOf(o.status) >= 0; }).length;
+      return '<a href="?tab=' + k + '" class="orders-tab ' + (tab === k ? 'active' : '') + '">' + TABS[k] + (n ? '<span class="tab-badge">' + n + '</span>' : '') + '</a>';
+    }).join('');
+    var orders = all.filter(function (o) { return !FILTER[tab] || FILTER[tab].indexOf(o.status) >= 0; });
+    $('banner').innerHTML = !orders.length ? '' : tab === 'topay' ? '<div class="oc-info-bar warn"><i class="fas fa-clock"></i> Complete your payment to confirm your order. Unpaid orders may be cancelled.</div>' : tab === 'toreceive' ? '<div class="oc-info-bar info"><i class="fas fa-truck"></i> Your order is on the way. It will auto-confirm as received shortly.</div>' : '';
+    if (!orders.length) { $('list').innerHTML = '<div class="orders-empty"><div class="big-emoji">📦</div><h3>' + (tab === 'all' ? 'No orders yet' : 'Nothing here') + '</h3><p style="margin-bottom:20px">' + (tab === 'all' ? "You haven't placed any orders yet." : 'No orders in this category.') + '</p><a href="/index.html#shop" class="btn btn-primary">Shop Now</a></div>'; return; }
+    $('list').innerHTML = orders.map(function (o) {
+      var c = CFG[o.status] || [o.status, '#888', 'rgba(100,100,100,.15)'];
+      var reviewed = o.items.filter(function (i) { return SH.myReview(i.product_id); }), unreviewed = o.items.filter(function (i) { return !SH.myReview(i.product_id); });
+      var act = '';
+      if (o.status === 'PENDING') act += '<button data-pay="' + o.id + '" class="oc-btn oc-btn-pay"><i class="fas fa-credit-card"></i> Pay Now</button>';
+      if (o.status === 'PENDING' || o.status === 'PAID') act += '<button data-cancel="' + o.id + '" class="oc-btn oc-btn-cancel"><i class="fas fa-times"></i> Cancel</button>';
+      if (['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'RECEIVED', 'COMPLETED'].indexOf(o.status) >= 0) act += '<a href="/track.html?order_id=' + o.id + '" class="oc-btn oc-btn-track"><i class="fas fa-truck"></i> Track</a>';
+      if (o.status === 'COMPLETED') { if (unreviewed.length) act += '<button data-rate="' + o.id + '" class="oc-btn oc-btn-rate"><i class="fas fa-star"></i> Rate</button>'; if (reviewed.length) act += '<button data-myrev="' + o.id + '" class="oc-btn oc-btn-viewreview"><i class="fas fa-eye"></i> My Review</button>'; }
+      return '<div class="order-card"><div class="oc-header"><div class="oc-seller"><i class="fas fa-pepper-hot"></i><span>Sambal House</span><span class="oc-seller-divider">|</span><span class="oc-order-ref">Order #' + o.id + '</span></div><span class="oc-status-badge" style="color:' + c[1] + ';background:' + c[2] + '">' + c[0] + '</span></div>' +
+        '<div class="oc-items">' + o.items.map(function (i) { return '<div class="oc-item"><span class="oc-item-name">' + SH.esc(i.name) + '</span><span class="oc-item-qty">× ' + i.qty + '</span><span class="oc-item-price">RM ' + SH.money(i.price) + '</span></div>'; }).join('') + '</div>' +
+        '<div class="oc-total-row"><span class="oc-meta">' + SH.fmtDate(o.created_at) + ' &nbsp;·&nbsp; ' + o.payment_method + '</span><span><span class="oc-total-label">Order Total: </span><span class="oc-total-amount">RM ' + SH.money(o.total) + '</span></span></div><div class="oc-actions">' + act + '</div></div>';
+    }).join('');
+  }
+  draw();
+  // live refresh so a tracked order visibly moves along
+  setInterval(function () { if (!document.querySelector('.review-modal-overlay.active') && $('payNowOverlay').style.display !== 'flex') draw(); }, 5000);
+
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.pay) { $('payNowOrderRef').textContent = '#' + b.dataset.pay; $('payNowOverlay').dataset.oid = b.dataset.pay; $('payNowOverlay').style.display = 'flex'; }
+    if (b.dataset.cancel) {
+      var id = parseInt(b.dataset.cancel, 10);
+      Swal.fire({ title: 'Cancel order #' + id + '?', text: 'This cannot be undone. Stock is returned to the shop.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, cancel it', cancelButtonText: 'Keep order' }).then(function (r) {
+        if (!r.isConfirmed) return;
+        if (SH.cancelOrder(id)) Swal.fire({ icon: 'success', title: 'Order cancelled', text: 'Order #' + id + ' has been cancelled.', timer: 1600, showConfirmButton: false }); draw();
+      });
+    }
+    if (b.dataset.rate) openReview(parseInt(b.dataset.rate, 10));
+    if (b.dataset.myrev) openMyReviews(parseInt(b.dataset.myrev, 10));
+  });
+  $('payBanks').innerHTML = Object.keys(SH.BANKS).map(function (k) { return '<button data-bank="' + k + '" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:.88rem;text-align:left"><i class="fas fa-university" style="color:var(--accent);margin-right:7px"></i>' + SH.esc(SH.BANKS[k].short) + '</button>'; }).join('');
+  $('payBanks').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) location.href = '/gateway.html?bank=' + b.dataset.bank + '&order_id=' + $('payNowOverlay').dataset.oid; });
+  $('pnClose').addEventListener('click', function () { $('payNowOverlay').style.display = 'none'; });
+
+  function openReview(id) {
+    var o = SH.orderById(id), todo = o.items.filter(function (i) { return !SH.myReview(i.product_id); });
+    $('reviewModalRef').textContent = 'Order #' + id; $('reviewForm').dataset.oid = id;
+    $('reviewProductsContainer').innerHTML = todo.map(function (it) {
+      var s = ''; for (var i = 5; i >= 1; i--) s += '<input type="radio" name="r' + it.product_id + '" id="star' + i + '_' + it.product_id + '" value="' + i + '"' + (i === 5 ? ' required' : '') + '><label for="star' + i + '_' + it.product_id + '">&#9733;</label>';
+      return '<div class="review-product-block"><div class="review-product-name">' + SH.esc(it.name) + '</div><div class="star-selector">' + s + '</div><textarea class="review-textarea" data-pid="' + it.product_id + '" placeholder="Share your thoughts about this product... (optional)" rows="3"></textarea></div>';
+    }).join('');
+    $('reviewModalOverlay').classList.add('active'); document.body.style.overflow = 'hidden';
+  }
+  function closeReview() { $('reviewModalOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+  $('rvClose').addEventListener('click', closeReview);
+  $('reviewModalOverlay').addEventListener('click', function (e) { if (e.target === this) closeReview(); });
+  $('reviewForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var list = [];
+    Array.prototype.forEach.call($('reviewForm').querySelectorAll('.review-textarea'), function (t) {
+      var pid = parseInt(t.dataset.pid, 10), ch = $('reviewForm').querySelector('input[name="r' + pid + '"]:checked');
+      if (ch) list.push({ product_id: pid, rating: parseInt(ch.value, 10), text: t.value.trim() });
+    });
+    SH.addReviews(parseInt($('reviewForm').dataset.oid, 10), list); closeReview(); draw();
+    Swal.fire({ icon: 'success', title: 'Review submitted!', text: 'Thank you for your feedback. It now shows on the product page.', timer: 1800, showConfirmButton: false });
+  });
+  function openMyReviews(id) {
+    var o = SH.orderById(id); $('viewReviewRef').textContent = 'Order #' + id;
+    $('viewReviewContainer').innerHTML = o.items.map(function (i) { var r = SH.myReview(i.product_id); if (!r) return ''; return '<div class="review-product-block"><div class="review-product-name">' + SH.esc(i.name) + '</div><div style="color:#f59e0b;font-size:1.1rem;margin:4px 0">' + '★'.repeat(r.rating) + '<span style="color:rgba(255,255,255,.2)">' + '★'.repeat(5 - r.rating) + '</span></div>' + (r.text ? '<div style="color:rgba(255,255,255,.7);font-size:.9rem">' + SH.esc(r.text) + '</div>' : '') + '<div style="color:var(--muted);font-size:.75rem;margin-top:4px">' + SH.fmtDate(r.created, false) + '</div></div>'; }).join('');
+    $('viewReviewOverlay').classList.add('active');
+  }
+  $('vrClose').addEventListener('click', function () { $('viewReviewOverlay').classList.remove('active'); });
+  $('viewReviewOverlay').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('active'); });
+});
+</script>
+<div id="footer-root"></div>
+</body>
+</html>
