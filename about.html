@@ -19,6 +19,55 @@
 <div class="container"><div class="about-wrap">
 <p>Sambal House started as a three-person university group project (CIT6224 Web Application Development, Multimedia University): a full e-commerce site for handcrafted chili pastes, written in <b>PHP and MySQL</b>. I was the team leader and the full-stack and security lead. This page is a <b>static rebuild</b> of it so anyone can click through the whole flow without installing XAMPP.</p>
 
+<h2>What I built</h2>
+<p>I wrote the whole application, front to back, as team leader, full-stack developer and security lead.</p>
+<div class="built-grid">
+<div class="built-card"><h3><i class="fas fa-user-lock"></i> Accounts and sign-in</h3><ul>
+<li>Registration with email-domain validation, autocomplete and a live password-strength meter</li>
+<li>Login for customers and a separate admin login</li>
+<li>Forgot-password and OTP reset, with 15-minute expiry</li>
+<li>Welcome email on sign-up</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-user-pen"></i> Profile and checkout</h3><ul>
+<li>Profile with saved address and Malaysian phone validation</li>
+<li>Inline change-password with current-password check</li>
+<li>Email change confirmed by an OTP sent to the new address</li>
+<li>Checkout with full server-side validation and one-click saved-address prefill</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-heart"></i> Favourites and reviews</h3><ul>
+<li>Wishlist with a no-reload toggle, a favourites page and a live navbar badge</li>
+<li>Rate-your-order modal and a read-back of your own reviews</li>
+<li>Ratings summary with breakdown bars and masked reviewer names on every product page</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-user-shield"></i> Admin panel</h3><ul>
+<li>Dashboard with product, order, customer and revenue stats</li>
+<li>Sales analytics for today, this week and this month</li>
+<li>Product add, edit, deactivate, reactivate and delete</li>
+<li>Sales report export to CSV</li>
+<li>Approve-return and approve-refund actions with 15-second live polling</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-shield-halved"></i> Security</h3><ul>
+<li>CSRF protection system on every form</li>
+<li>Prepared statements, output escaping and BCrypt password hashing</li>
+<li>Session hardening, login rate limiting and one-time payment tokens</li>
+<li>A written security review: 21 findings from file-upload RCE and payment bypass to CSRF, IDOR and brute force, each fixed and documented</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-store"></i> Shop and product pages</h3><ul>
+<li>Catalogue with live search, price, stock and category filters, and sorting</li>
+<li>Product page with breadcrumb, price box, quantity stepper and image zoom</li>
+<li>"You may also like" grid on every product</li>
+<li>All the CSS, hand-written with no framework</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-cart-shopping"></i> Cart, payment and receipts</h3><ul>
+<li>Cart that persists per login, with quantities capped to stock</li>
+<li>FPX online-banking gateway for 8 Malaysian banks and e-wallets</li>
+<li>Payment success page and order confirmation email</li>
+<li>PDF receipt download for paid orders</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-truck"></i> Orders, tracking and refunds</h3><ul>
+<li>Order history in 7 tabs, with cancel (stock restored) and Pay Now retry</li>
+<li>5-step live order tracker with countdown and toast notifications</li>
+<li>Refund tracker and return tracker, each gated on admin approval</li>
+<li>Cancellation email, and a live user-activity monitor for admins</li>
+<li>Admin order detail with customer purchase summary and PDF invoice</li></ul></div>
+<div class="built-card"><h3><i class="fas fa-people-group"></i> Team lead</h3><ul>
+<li>Split the work across three people and kept the codebase and database design consistent</li>
+<li>Integrated everyone's pages into one working app</li></ul></div>
+</div>
+
 <h2>Try it</h2>
 <ul>
 <li>Sign in with <b>Try as customer</b> on the <a href="/login.html">login page</a>, or register (the OTP code is shown on screen).</li>

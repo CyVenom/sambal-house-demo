@@ -13,3 +13,15 @@
 .about-wrap th,.about-wrap td{text-align:left;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}
 .about-wrap th{color:var(--muted);font-weight:600}
 .about-wrap code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;font-size:.85em}
+
+/* links on the About page and demo hints: brand colour instead of default blue */
+.about-wrap a:not(.btn),.demo-hint a:not(.btn){color:var(--accent);font-weight:600;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/100% 1px no-repeat;padding-bottom:1px;transition:background-size .2s,color .2s}
+.about-wrap a:not(.btn):hover,.demo-hint a:not(.btn):hover{color:var(--accent-2,#ff6b4a);background-size:100% 2px}
+.about-wrap a:not(.btn):focus-visible,.demo-hint a:not(.btn):focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.built-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:14px 0 4px}
+.built-card{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:18px 20px}
+.built-card h3{font-size:1rem;margin:0 0 10px;color:#fff;display:flex;align-items:center;gap:9px}
+.built-card h3 i{color:var(--accent);font-size:.95rem}
+.built-card ul{margin:0;padding-left:18px}
+.built-card li{font-size:.88rem;line-height:1.55;margin-bottom:5px}
+@media(max-width:700px){.built-grid{grid-template-columns:1fr}}
